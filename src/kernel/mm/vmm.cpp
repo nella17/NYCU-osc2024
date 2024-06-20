@@ -87,7 +87,7 @@ void VMM::vma_print(int tid) {
   for (auto vma : vmas)
     kprintf("0x%016lx ~ 0x%016lx %s\n", vma->start(), vma->end(),
             vma->name.data());
-  kprintf("--------------\n");
+  kprintf("-----------------\n");
 }
 
 uint64_t VMM::mmap(uint64_t va, uint64_t size, ProtFlags prot, MmapFlags flags,

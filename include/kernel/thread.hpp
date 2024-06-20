@@ -49,6 +49,9 @@ struct Kthread : ListItem<Kthread> {
   }
   void vma_print() {
     vmm.vma_print(tid);
+    kprintf("0x%016lx ~ 0x%016lx %s\n", kernel_stack.start(),
+            kernel_stack.end(), "[kernel_stack]");
+    kprintf("-----------------\n");
   }
 };
 

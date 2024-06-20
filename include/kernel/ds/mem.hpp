@@ -32,6 +32,9 @@ struct Mem {
     dealloc();
   }
 
+  void* start(uint64_t off = 0) {
+    return addr + off;
+  }
   void* end(uint64_t off = 0) {
     return addr + size - off;
   }
