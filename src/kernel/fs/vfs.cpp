@@ -334,7 +334,7 @@ SYSCALL_DEFINE0(sync) {
 
 void vfs_sync() {
   for (auto mount : mounts) {
-    klog("sync '%s' %s\n", mount->path.data(), mount->fs->name());
+    FS_INFO("sync '%s' %s\n", mount->path.data(), mount->fs->name());
     mount->fs->sync(mount);
   }
 }

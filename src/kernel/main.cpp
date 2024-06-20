@@ -36,7 +36,6 @@ void kernel_main(void* dtb_addr) {
   klog("boot time      : " PRTval "s\n", FTval(tick2timeval(boot_timer_tick)));
 
   fdt.init(pa2va(dtb_addr));
-  initramfs::preinit();
 
   mm_preinit();
 
@@ -46,7 +45,7 @@ void kernel_main(void* dtb_addr) {
   mm_reserve(__kernel_beg, __kernel_end);
   mm_reserve(__stack_beg, __stack_end);
   // initramfs
-  mm_reserve(initramfs::startp(), initramfs::endp());
+  initramfs::preinit();
   // flatten device tree
   mm_reserve(fdt.startp(), fdt.endp());
   // upper page table

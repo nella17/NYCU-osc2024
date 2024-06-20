@@ -1,9 +1,10 @@
 #include "fs/framebufferfs.hpp"
 
 #include "board/mailbox.hpp"
-#include "io.hpp"
+#include "fs/log.hpp"
 #include "mm/mmu.hpp"
-#include "mm/vmm.hpp"
+
+#define FS_TYPE "framebufferfs"
 
 namespace framebufferfs {
 
@@ -79,15 +80,15 @@ FileSystem::FileSystem() {
         .lfb = pa2va((char*)(void*)(unsigned long)mbox[28]),
         .buf_size = mbox[29],
     };
-    klog("[framebufferfs] width = %d\n", data->width);
-    klog("[framebufferfs] height = %d\n", data->height);
-    klog("[framebufferfs] pitch = %d\n", data->pitch);
-    klog("[framebufferfs] isrgb = %d\n", data->isrgb);
-    klog("[framebufferfs] lfb = %p\n", data->lfb);
-    klog("[framebufferfs] buf_size = 0x%lx\n", data->buf_size);
+    FS_INFO("width = %d\n", data->width);
+    FS_INFO("height = %d\n", data->height);
+    FS_INFO("pitch = %d\n", data->pitch);
+    FS_INFO("isrgb = %d\n", data->isrgb);
+    FS_INFO("lfb = %p\n", data->lfb);
+    FS_INFO("buf_size = 0x%lx\n", data->buf_size);
   } else {
     data = nullptr;
-    kputs("Unable to set screen resolution to 1024x768x32\n");
+    FS_WARN("Unable to set screen resolution to 1024x768x32\n");
   }
 }
 

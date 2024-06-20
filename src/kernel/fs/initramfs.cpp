@@ -3,7 +3,6 @@
 #include "fdt.hpp"
 #include "fs/log.hpp"
 #include "fs/vfs.hpp"
-#include "io.hpp"
 #include "mm/mmu.hpp"
 
 #define FS_TYPE "initramfs"
@@ -13,19 +12,26 @@ namespace initramfs {
 CPIO cpio;
 
 void preinit() {
-  auto find32 = [](auto path) {
+  auto find32 = [](auto path, bool& bad) -> char* {
     auto [found, view] = fdt.find(path);
-    if (not found)
-      panic("initramfs: device %s not found", path);
+    if (not found) {
+      FS_WARN("initramfs: device %s not found", path);
+      bad = true;
+      return nullptr;
+    }
     auto addr = pa2va((char*)(uint64_t)fdt_ld32(view.data()));
     return addr;
   };
-  auto start = find32("/chosen/linux,initrd-start");
-  auto end = find32("/chosen/linux,initrd-end");
 
-  klog("initramfs      : %p ~ %p\n", start, end);
-  if (not cpio.init(start, end)) {
-    klog("initramfs: init failed\n");
+  bool bad = false;
+  auto start = find32("/chosen/linux,initrd-start", bad);
+  auto end = find32("/chosen/linux,initrd-end", bad);
+
+  FS_INFO("range %p ~ %p\n", start, end);
+  if (bad or not cpio.init(start, end)) {
+    FS_WARN("init failed\n");
+  } else {
+    mm_reserve(startp(), endp());
   }
 }
 
